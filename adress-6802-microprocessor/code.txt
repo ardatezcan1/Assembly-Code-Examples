@@ -1,0 +1,24 @@
+	CPU 	"6800.TBL"
+	HOF 	"MOT8"
+	ORG 	0F300H; 	Program start
+START:	LDX	#0F300H;	The value of F300H is loaded into the X register
+	LDAA	#44H;		44H value is loaded into A accumulator
+	CLR	41H;		Reset address 0041H to hold the total value
+EQUAL:	CMPA 	0,X;		The value in register X is compared with the value in register A
+	BNE	NEXT;		If not equal, branches to NEXT
+	CMPA	1,X;		The value in the next address from the address in the X register is compared with the value in the A register
+	BNE	NEXT;		If not equal, branches to NEXT
+	INC	41H;		Increments the value at address 0041H by 1
+NEXT:	INX;			Increments the value in the X register by 1
+	INX;			Increments the value in the X register by 1
+	CPX	#0F264H;	Checking if the value in the X register is equal to F364
+	BNE	EQUAL;		Returns to EQUAL if the X register has not arrived at the last address
+	CLRA;			Resets the value of the A register
+	LDAA	41H;		Assigns the value found at address 0041H to register B
+;    VECTOR ADDRESSES
+	ORG	0FFF8H
+	DWM	START	;IRQ	Coverable cutting
+	DWM	START	;SWI	Cutting with software
+	DWM	START	;NMI	Uncoverable cutting
+	DWM	START	;RES	Reset			
+	END
